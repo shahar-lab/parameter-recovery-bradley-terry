@@ -1,1 +1,1 @@
-# Parameters-Recovery-bradley-Terry-model
+# parameters-recovery-bradley-terry-model
