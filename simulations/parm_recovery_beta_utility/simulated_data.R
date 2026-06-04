@@ -8,13 +8,14 @@ data_path = './simulations/parm_recovery_beta_utility/data/'
 #### SETUP STUDY CONFIG ####
 
 cfg = data.frame(
-  Nsubjects = 10,
+  Nsubjects = 500,
   Ntrials = 100,
   Noffer  = 6
 )
-
-beta = runif(cfg$Nsubjects, 0.5, 2)
-
+beta_mu = 0.4
+beta_sigma = 0.3
+beta = rlnorm(cfg$Nsubjects, 0.4, 0.3)
+hist(beta)
 u_matrix = matrix(0, nrow = cfg$Nsubjects, ncol = cfg$Noffer)
 for (i in 1:cfg$Nsubjects) {
 u_matrix[i,]  = rnorm(cfg$Noffer, 0, 1)
