@@ -37,6 +37,9 @@ for (subject in 1:cfg$Nsubjects) {
   df = rbind(df, df_temp)
   
 }
+
+
+df$choice_bin <- ifelse(df$choice == 1, 1, 0)
   
 save(df, file = paste0(data_path,"df.rdata"))
 save(true_parameters, file = paste0(data_path,"true_parameters.rdata"))
