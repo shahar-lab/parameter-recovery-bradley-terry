@@ -5,16 +5,16 @@ library(posterior)
 setwd("~/GitHub/parameter-recovery-bradley-terry/models/beta_utility")
 model <- cmdstan_model("beta_utility.stan")
 df <- read.csv("C://Users//lihin//OneDrive//מסמכים//GitHub//parameter-recovery-bradley-terry//simulations//parm_recovery_beta_utility//data//df.csv") 
-
+names(df)
 # 2. Prepare data list (assuming 'df' has the 'choice_bin' column)
 stan_data <- list(
   N_trials   = nrow(df),
   N_subjects = max(df$subject), 
   N_options  = 6,               
   subject    = df$subject,
-  offer_1    = df$offer.1,
-  offer_2    = df$offer.2,
-  choice     = df$choice_bin
+  offer_A    = df$offer_A,
+  offer_B    = df$offer_B,
+  is_choice_A     = df$is_choice_A
 )
 
 # 3. Run MCMC sampling
