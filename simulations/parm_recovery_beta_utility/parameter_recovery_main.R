@@ -36,8 +36,6 @@ fit <- model$variational(
   draws = 4000
 )
 
-
-
 save(fit, file = paste0(data_dir, "fit.rdata"))
 
 #### MCMC SAMPLING ####

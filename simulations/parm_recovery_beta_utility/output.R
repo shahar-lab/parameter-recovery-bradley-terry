@@ -148,3 +148,41 @@ ggsave(
   fig2,
   width = 12, height = 6
 )
+
+#### FIGURE 3: BETA PARAMETER RECOVERY ####
+
+df_beta <- data.frame(
+  true      = true_parameters$beta,
+  estimated = unname(median_beta)
+)
+df_beta <- df_beta[complete.cases(df_beta$true, df_beta$estimated), ]
+stopifnot(nrow(df_beta) == length(true_parameters$beta))
+
+shared_limits_beta <- range(c(df_beta$true, df_beta$estimated), na.rm = TRUE)
+axis_breaks_beta   <- seq(shared_limits_beta[1], shared_limits_beta[2], length.out = 4)
+pearson_r_beta     <- cor(df_beta$true, df_beta$estimated, method = "pearson")
+
+fig3 <- ggplot(df_beta, aes(x = true, y = estimated)) +
+  geom_point(colour = "#4477AA", alpha = 0.75, size = 2) +
+  geom_smooth(method = "lm", se = FALSE, colour = "#EE6677", linewidth = 0.8) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", colour = "grey60") +
+  annotate(
+    "text",
+    x     = Inf,
+    y     = Inf,
+    label = sprintf("[Pearson r = %.2f]", pearson_r_beta),
+    hjust = 1.05, vjust = 1.4,
+    size  = 3.5, colour = "grey30"
+  ) +
+  scale_x_continuous(breaks = round(axis_breaks_beta, 2)) +
+  scale_y_continuous(breaks = round(axis_breaks_beta, 2)) +
+  coord_equal(xlim = shared_limits_beta, ylim = shared_limits_beta, clip = "off") +
+  theme_minimal(base_size = 13) +
+  theme(panel.grid.minor = element_blank()) +
+  labs(x = expression("True " * beta), y = expression("Estimated " * beta * " (median)"))
+
+ggsave(
+  paste0(figs_dir, "beta_recovery.pdf"),
+  fig3,
+  width = 5, height = 5
+)
