@@ -1,18 +1,17 @@
 data {
-  int<lower=1> N_trials;     // Total number of trials
-  int<lower=1> N_subjects;   // Number of unique subjects (10)
-  int<lower=1> N_options;    // Number of available options (6)
+  int<lower=1> N_trials;     
+  int<lower=1> N_subjects;   
+  int<lower=1> N_options;    
 
-  array[N_trials] int<lower=1, upper=N_subjects> subject; // tells who is the subject in each trial
-  array[N_trials] int<lower=1, upper=N_options> offer_A; // tells what is offer 1 in each trial
-  array[N_trials] int<lower=1, upper=N_options> offer_B; // tells what is offer 2 in each trial
-  array[N_trials] int<lower=0, upper=1> is_choice_A;  // tells us the choice in each trial
+  array[N_trials] int<lower=1, upper=N_subjects> subject; 
+  array[N_trials] int<lower=1, upper=N_options> offer_A; 
+  array[N_trials] int<lower=1, upper=N_options> offer_B; 
+  array[N_trials] int<lower=0, upper=1> is_choice_A;  
 }
 
 parameters {
-
-  // subject-level utilities
-  matrix [N_subjects, N_options] u_matrix;
+  // Estimate N-1 utilities to allow for the sum-to-zero constraint
+  matrix[N_subjects, N_options - 1] u_raw;
 
   // group-level beta parameters
   real mu_log_beta;
@@ -20,7 +19,16 @@ parameters {
 
   // subject-level betas
   vector<lower=0>[N_subjects] beta;
+}
 
+transformed parameters {
+  matrix[N_subjects, N_options] u_matrix;
+  
+  // Apply sum-to-zero constraint per subject
+  for (i in 1:N_subjects) {
+    u_matrix[i, 1:(N_options - 1)] = u_raw[i, ];
+    u_matrix[i, N_options] = -sum(u_raw[i, ]); // The Nth option balances the rest
+  }
 }
 
 model {
@@ -29,10 +37,11 @@ model {
 
   beta ~ lognormal(mu_log_beta, sigma_log_beta);
 
+  to_vector(u_matrix) ~ normal(0, 1);
+  
   for (t in 1:N_trials) {
     is_choice_A[t] ~ bernoulli_logit(
-      beta[subject[t]] *
-      (u_matrix[subject[t], offer_A[t]] -
-        u_matrix[subject[t], offer_B[t]]));
+      beta[subject[t]] * (u_matrix[subject[t], offer_A[t]] - 
+       u_matrix[subject[t], offer_B[t]]));
   }
 }

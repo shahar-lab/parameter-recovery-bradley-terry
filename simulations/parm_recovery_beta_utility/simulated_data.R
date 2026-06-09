@@ -8,7 +8,7 @@ data_path = './simulations/parm_recovery_beta_utility/data/'
 #### SETUP STUDY CONFIG ####
 
 cfg = data.frame( 
-  Nsubjects = 20,
+  Nsubjects = 200,
   Ntrials = 100,
   Noffer  = 6
 )
@@ -39,9 +39,11 @@ as.data.frame(u_matrix) |>
   labs(x = "Offer", y = "Utility", color = "Subject") +
   theme_minimal()
 
-true_parameters = list( beta = beta,
-                              u_matrix = u_matrix 
-                              )
+true_parameters = list( beta     = beta,
+                        u_matrix = u_matrix,
+                        beta_mu  = beta_mu,
+                        beta_sigma = beta_sigma
+                        )
 #### SIMULATE DATA ####
 
 df = df_temp = data.frame()

@@ -40,8 +40,8 @@ estimates <- list(
 
 #### FIGURE 1: POSTERIOR HYPERPARAMETERS ####
 
-true_mu    <- 0.4
-true_sigma <- 0.3
+true_mu    <- true_parameters$beta_mu
+true_sigma <- true_parameters$beta_sigma
 
 med_mu    <- median(mu_log_beta_samples)
 med_sigma <- median(sigma_log_beta_samples)
