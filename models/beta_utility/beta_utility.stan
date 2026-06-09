@@ -12,7 +12,7 @@ data {
 parameters {
 
   // subject-level utilities
-  matrix<lower=-1, upper=1>[N_subjects, N_options] u_matrix;
+  matrix [N_subjects, N_options] u_matrix;
 
   // group-level beta parameters
   real mu_log_beta;

@@ -6,7 +6,7 @@ sim.block <- function(subject, u, beta, cfg){
   df <- data.frame()
   
   for (trial in 1:Ntrials) {
-    offer <- sample(1:Noffer, 2)
+    offer <- sample(1:Noffer, 2, replace = FALSE)
     
     u1 <- u[offer[1]]
     u2 <- u[offer[2]]
