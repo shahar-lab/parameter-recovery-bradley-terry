@@ -11,7 +11,7 @@ figs_dir <- "./simulations/parm_recovery_beta_utility/figs/"
 
 load(paste0(data_dir, "cfg.rdata"))
 load(paste0(data_dir, "true_parameters.rdata"))
-load(paste0(data_dir, "fit.rdata"))
+fit <- readRDS(paste0(data_dir, "fit.rds"))
 
 #### EXTRACT POSTERIOR SAMPLES ####
 
