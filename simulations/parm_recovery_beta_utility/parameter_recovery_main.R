@@ -1,35 +1,58 @@
+rm(list = ls())
+
+#### SETUP ####
 library(cmdstanr)
 library(posterior)
 
+model_name <- "beta_utility"
+model_dir  <- paste0("./models/", model_name, "/")
+data_dir   <- "./simulations/parm_recovery_beta_utility/data/"
+figs_dir   <- "./simulations/parm_recovery_beta_utility/figs/"
+
+load(paste0(data_dir, "cfg.rdata"))
+load(paste0(data_dir, "df.rdata"))
+
 # 1. Compile the model
-setwd("~/GitHub/parameter-recovery-bradley-terry/models/beta_utility")
-model <- cmdstan_model("beta_utility.stan")
-df <- read.csv("C://Users//lihin//OneDrive//מסמכים//GitHub//parameter-recovery-bradley-terry//simulations//parm_recovery_beta_utility//data//df.csv") 
-names(df)
-# 2. Prepare data list (assuming 'df' has the 'choice_bin' column)
+model <- cmdstan_model(paste0(model_dir, model_name, ".stan"))
+
+# 2. Prepare data list
 stan_data <- list(
   N_trials   = nrow(df),
-  N_subjects = max(df$subject), 
-  N_options  = 6,               
+  N_subjects = cfg$Nsubjects,
+  N_options  = cfg$Noffer,
   subject    = df$subject,
   offer_A    = df$offer_A,
   offer_B    = df$offer_B,
-  is_choice_A     = df$is_choice_A
+  is_choice_A = df$is_choice_A
 )
 
-# 3. Run MCMC sampling
-fit <- model$sample(
+#### VB ESTIMATION ####
+
+# 3. Run variational inference
+fit <- model$variational(
   data = stan_data,
-  chains = 4,
-  parallel_chains = 4,
-  iter_warmup = 1000,
-  iter_sampling = 1000
+  algorithm = "meanfield",
+  iter = 10000,
+  draws = 4000
 )
 
-pars <- as_draws_rvars(fit) # Add all relevant parameters
-pars
+save(fit, file = paste0(data_dir, "fit.rdata"))
 
-summarize_draws(pars, posterior::rhat, ess_mean, ess_tail)
+#### MCMC SAMPLING ####
+
+# # 3. Run MCMC sampling
+# fit <- model$sample(
+#   data = stan_data,
+#   chains = 4,
+#   parallel_chains = 4,
+#   iter_warmup = 1000,
+#   iter_sampling = 1000
+# )
+
+#pars <- as_draws_rvars(fit) # Add all relevant parameters
+#pars
+
+#summarize_draws(pars, posterior::rhat, ess_mean, ess_tail)
 
 
 # AI code 
