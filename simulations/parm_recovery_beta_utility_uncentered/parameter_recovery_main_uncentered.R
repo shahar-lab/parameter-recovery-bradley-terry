@@ -53,5 +53,3 @@ fit$save_object(file = paste0(data_dir, "fit.rds"))
 #pars
 
 #summarize_draws(pars, posterior::rhat, ess_mean, ess_tail)
-
-

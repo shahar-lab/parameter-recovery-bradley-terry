@@ -37,8 +37,8 @@ transformed parameters {
 
 model {
   // Hierarchical priors for beta
-  mu_log_beta ~ normal(0, 1);
-  sigma_log_beta ~ exponential(1);
+  mu_log_beta ~ normal(0, 2);
+  sigma_log_beta ~ exponential(2);
   beta ~ lognormal(mu_log_beta, sigma_log_beta);
 
   // Weak prior on u_raw to provide initial geometry before transformation

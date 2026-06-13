@@ -13,8 +13,8 @@ cfg = data.frame(
   Noffer  = 6
 )
 
-beta_mu = 0.4
-beta_sigma = 0.3
+beta_mu = 0.3
+beta_sigma = 0.4
 beta = rlnorm(cfg$Nsubjects, beta_mu, beta_sigma) #one value of beta per subject. 
 
 # This is equivalent to sample from N(0.4, 0.3) |> exp()

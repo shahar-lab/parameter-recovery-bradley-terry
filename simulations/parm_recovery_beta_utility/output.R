@@ -69,6 +69,7 @@ p_mu <- ggplot(data.frame(theta = mu_log_beta_samples), aes(x = theta, y = 0)) +
     axis.line.y  = element_blank(),
     axis.line.x  = element_line(colour = "grey30")
   ) +
+  xlim(0, 1) +
   labs(x = expression(mu[log~beta])) +
   coord_cartesian(ylim = c(0, 1.3), clip = "off")
 
@@ -95,6 +96,7 @@ p_sigma <- ggplot(data.frame(theta = sigma_log_beta_samples), aes(x = theta, y =
     axis.line.y  = element_blank(),
     axis.line.x  = element_line(colour = "grey30")
   ) +
+  xlim(0, 1) +
   labs(x = expression(sigma[log~beta])) +
   coord_cartesian(ylim = c(0, 1.3), clip = "off")
 
