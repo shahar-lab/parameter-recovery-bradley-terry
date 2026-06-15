@@ -1,7 +1,7 @@
 rm(list = ls())
 library(tidyverse)
 
-data_path = './simulations/parm_recovery_beta_utility_compared_5_for_real_data/data/'
+data_path = './data/data_filtered/'
 
 #### SETUP STUDY CONFIG ####
 

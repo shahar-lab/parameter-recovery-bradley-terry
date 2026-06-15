@@ -6,8 +6,10 @@ library(posterior)
 library(ggdist)
 library(patchwork)
 
-data_dir <- "./simulations/parm_recovery_beta_utility_compared_5_for_real_data/data/"
-figs_dir <- "./simulations/parm_recovery_beta_utility_compared_5_for_real_data/figs/"
+data_dir <- "./simulations/parm_recovery_beta_utility_compared_5_for_real_data/data_local/"
+figs_dir <- "./simulations/parm_recovery_beta_utility_compared_5_for_real_data/figs_local/"
+data_path = './data/data_filtered/'
+raw_data <- load(paste0(data_dir, "df.rdata"))
 
 load(paste0(data_dir, "cfg.rdata"))
 fit <- readRDS(paste0(data_dir, "fit.rds"))
@@ -152,3 +154,66 @@ ggsave(
   fig3,
   width = 6, height = 5
 )
+
+
+### ggplot for individual u values
+
+samples_rvar <- as_draws_rvars(fit)
+
+library(tidybayes)
+
+draws_for_plot <- samples_rvar |> 
+  spread_draws(u_matrix[subject, offer]) |> 
+  mutate(offer_label = as.factor(offer + 1))
+#head(grid_for_plot)
+
+# fig4 <- ggplot(grid_for_plot, aes(x = offer_label, y = u_matrix)) +
+#   geom_errorbar(aes(ymin = .lower, ymax = .upper), width = 0.2, color = "darkgray") +
+#   geom_point(color = "navy", size = 2) + 
+#   facet_wrap( ~ subject) +
+#   theme_minimal()
+
+
+fig5 <- ggplot(draws_for_plot, aes(x = offer_label, y = u_matrix)) +
+  stat_halfeye(fill = "lightblue", alpha = 0.7, .width = 0.95, linewidth = 0.8) + 
+  facet_wrap( ~ subject) +
+  theme_minimal() +
+  labs(y = "Utility (u)", x = "Valence")
+
+ggsave(
+  paste0(figs_dir, "individual_u_values.pdf"),
+  fig5,
+  width = 12, height = 12
+)
+
+### RT as a Function of Utility Difference
+
+u_medians <- samples_rvar |> 
+  spread_draws(u_matrix[subject, offer]) |> 
+  median_qi(u_matrix) |>   
+  mutate(offer_label = as.factor(offer + 1)) |> 
+  select(subject, offer, u_median = u_matrix, offer_label)
+
+raw_data_with_delta <- raw_data |> 
+  left_join(u_medians, by = c("subject" = "subject", "offer_A" = "offer")) |> 
+  rename(u_first = u_median) |> 
+  
+  # מיזוג עבור ההצעה השנייה בטרייל
+  left_join(u_medians, by = c("subject" = "subject", "offer2" = "offer")) |> 
+  rename(u_second = u_median) |> 
+  
+  # חישוב ההפרש בערך מוחלט
+  mutate(delta_u = abs(u_first - u_second))
+
+# 3. בניית הגרף: זמן תגובה כפונקציה של דלתא u
+ggplot(raw_data_with_delta, aes(x = delta_u, y = subject_rt)) + # החלף ל-rt או לשם עמודת ה-RT שלך
+  geom_point(alpha = 0.2, color = "black") + # נקודות חצי שקופות בגלל עומס הנתונים
+  geom_smooth(method = "lm", color = "blue", se = TRUE) + # קו מגמה לינארי לכל נבדק
+  facet_wrap(~ subject) + 
+  theme_minimal() +
+  labs(
+    x = "Absolute Utility Difference (|Δu|)",
+    y = "Reaction Time (RT)",
+    title = "Reaction Time as a Function of Utility Difference per Subject"
+  )
+

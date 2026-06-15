@@ -6,8 +6,8 @@ library(posterior)
 
 model_name <- "beta_utility"
 model_dir  <- paste0("./models/", model_name, "/")
-data_dir   <- "./simulations/parm_recovery_beta_utility_compared_5_for_real_data/data/"
-figs_dir   <- "./simulations/parm_recovery_beta_utility_compared_5_for_real_data/figs/"
+data_dir   <- "./simulations/parm_recovery_beta_utility_compared_5_for_real_data/data_local/"
+figs_dir   <- "./simulations/parm_recovery_beta_utility_compared_5_for_real_data/figs_local/"
 
 load(paste0(data_dir, "cfg.rdata"))
 load(paste0(data_dir, "df.rdata"))
