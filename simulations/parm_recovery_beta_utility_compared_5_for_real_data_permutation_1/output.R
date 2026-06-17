@@ -6,10 +6,11 @@ library(posterior)
 library(ggdist)
 library(patchwork)
 
-data_dir <- "./simulations/parm_recovery_beta_utility_compared_5_for_real_data/data_local/"
-figs_dir <- "./simulations/parm_recovery_beta_utility_compared_5_for_real_data/figs_local/"
-data_path = './data/data_filtered/'
-raw_data <- read.csv(paste0(data_path, "lihis_data_20_subs_for_bradley_terry.csv"))
+data_dir <- "./simulations/parm_recovery_beta_utility_compared_5_for_real_data_permutation_1/data_local/"
+figs_dir <- "./simulations/parm_recovery_beta_utility_compared_5_for_real_data_permutation_1/figs_local/"
+
+data_path = './simulations/parm_recovery_beta_utility_compared_5_for_real_data_permutation_1/data_local/'
+raw_data <- read.csv(paste0(data_path, "lihis_data_20_subs_for_bradley_terry_shuffled.csv"))
 
 load(paste0(data_dir, "cfg.rdata"))
 fit <- readRDS(paste0(data_dir, "fit.rds"))
@@ -66,7 +67,6 @@ p_mu <- ggplot(data.frame(theta = mu_log_beta_samples), aes(x = theta, y = 0)) +
     axis.line.y  = element_blank(),
     axis.line.x  = element_line(colour = "grey30")
   ) +
-  xlim(0, 1) +
   labs(x = expression(mu[log~beta])) +
   coord_cartesian(ylim = c(0, 1.3), clip = "off")
 
